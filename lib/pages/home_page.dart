@@ -231,16 +231,16 @@ class _HomePageState extends State<HomePage>
           const SizedBox(height: 20),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
+              color: AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 15),
           Text(
             description,
-            style: const TextStyle(fontSize: 14, color: AppTheme.textLight),
+            style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -254,7 +254,7 @@ class _HomePageState extends State<HomePage>
         horizontal: isMobile ? 20 : 60,
         vertical: 60,
       ),
-      color: AppTheme.lightColor,
+      color: AppTheme.darkCard,
       child: Column(
         children: [
           Text(
@@ -313,15 +313,15 @@ class _HomePageState extends State<HomePage>
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.textColor,
+                color: AppTheme.textPrimary,
               ),
             ),
             Text(
               subtitle,
-              style: const TextStyle(fontSize: 13, color: AppTheme.textLight),
+              style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
             ),
           ],
         ),

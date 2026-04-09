@@ -28,9 +28,10 @@ class _AdminLoginPageState extends State<AdminLoginPage>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.3),
@@ -128,7 +129,7 @@ class _AdminLoginPageState extends State<AdminLoginPage>
                               gradient: const LinearGradient(
                                 colors: [
                                   AppTheme.primaryColor,
-                                  AppTheme.secondaryColor
+                                  AppTheme.secondaryColor,
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(20),
@@ -152,7 +153,7 @@ class _AdminLoginPageState extends State<AdminLoginPage>
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.textColor,
+                              color: AppTheme.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -160,7 +161,7 @@ class _AdminLoginPageState extends State<AdminLoginPage>
                             'Sign in to access CMS',
                             style: TextStyle(
                               fontSize: 15,
-                              color: AppTheme.textLight,
+                              color: AppTheme.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 35),
@@ -255,7 +256,7 @@ class _AdminLoginPageState extends State<AdminLoginPage>
                                         _obscurePassword
                                             ? Icons.visibility_off
                                             : Icons.visibility,
-                                        color: AppTheme.textLight,
+                                        color: AppTheme.textSecondary,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -312,7 +313,8 @@ class _AdminLoginPageState extends State<AdminLoginPage>
                                               strokeWidth: 2,
                                               valueColor:
                                                   AlwaysStoppedAnimation<Color>(
-                                                      Colors.white),
+                                                    Colors.white,
+                                                  ),
                                             ),
                                           )
                                         : const Text(
@@ -334,7 +336,7 @@ class _AdminLoginPageState extends State<AdminLoginPage>
                           Container(
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
-                              color: AppTheme.lightColor,
+                              color: AppTheme.darkCard,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Column(
@@ -344,7 +346,7 @@ class _AdminLoginPageState extends State<AdminLoginPage>
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
-                                    color: AppTheme.textColor,
+                                    color: AppTheme.textPrimary,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -391,10 +393,7 @@ class _AdminLoginPageState extends State<AdminLoginPage>
   Widget _buildDemoInfo(String text) {
     return Text(
       text,
-      style: const TextStyle(
-        fontSize: 12,
-        color: AppTheme.textLight,
-      ),
+      style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
     );
   }
 }

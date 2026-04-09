@@ -20,6 +20,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final isMobile = screenWidth < 768;
 
     return Scaffold(
+      backgroundColor: const Color(0xFF1A1A1A),
       body: Row(
         children: [
           if (!isMobile)
@@ -37,9 +38,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 });
               },
             ),
-          Expanded(
-            child: _buildMainContent(isMobile),
-          ),
+          Expanded(child: _buildMainContent(isMobile)),
         ],
       ),
     );
@@ -62,7 +61,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   Widget _buildDashboardContent(bool isMobile) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(30),
+      padding: EdgeInsets.all(isMobile ? 20 : 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -73,34 +72,51 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Dashboard',
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Welcome back, Admin!',
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    'Selamat datang di panel Admin CMS',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppTheme.textSecondary,
+                    ),
                   ),
                 ],
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
+                  color: AppTheme.primaryColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppTheme.primaryColor.withOpacity(0.3),
+                    width: 1,
+                  ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.calendar_today,
-                        size: 16, color: AppTheme.primaryColor),
+                    const Icon(
+                      Icons.calendar_today,
+                      size: 16,
+                      color: AppTheme.primaryColor,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'April 5, 2026',
                       style: const TextStyle(
                         color: AppTheme.primaryColor,
                         fontWeight: FontWeight.w600,
+                        fontSize: 13,
                       ),
                     ),
                   ],
@@ -111,60 +127,101 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           const SizedBox(height: 30),
 
           // Stats cards
-          Wrap(
-            spacing: 20,
-            runSpacing: 20,
-            children: [
-              _buildStatCard(
-                'Total Articles',
-                '24',
-                Icons.article,
-                AppTheme.primaryColor,
-                '+12% from last month',
-              ),
-              _buildStatCard(
-                'Published',
-                '18',
-                Icons.check_circle,
-                Colors.green,
-                '75% of total',
-              ),
-              _buildStatCard(
-                'Drafts',
-                '6',
-                Icons.drafts,
-                Colors.orange,
-                'Pending review',
-              ),
-              _buildStatCard(
-                'Total Views',
-                '12.5K',
-                Icons.visibility,
-                Colors.purple,
-                '+23% this week',
-              ),
-            ],
-          ),
-          const SizedBox(height: 40),
+          if (!isMobile)
+            Row(
+              children: [
+                Expanded(
+                  child: _buildStatCard(
+                    'Total Artikel',
+                    '24',
+                    Icons.article,
+                    const Color(0xFF3B82F6),
+                    '+12% from last month',
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: _buildStatCard(
+                    'Published',
+                    '18',
+                    Icons.check_circle,
+                    const Color(0xFF10B981),
+                    '75% of total',
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: _buildStatCard(
+                    'Drafts',
+                    '6',
+                    Icons.drafts,
+                    const Color(0xFFF59E0B),
+                    'Pending review',
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: _buildStatCard(
+                    'Total Views',
+                    '12.5K',
+                    Icons.visibility,
+                    const Color(0xFF8B5CF6),
+                    '+23% this week',
+                  ),
+                ),
+              ],
+            ),
+          if (isMobile)
+            Column(
+              children: [
+                _buildStatCard(
+                  'Total Artikel',
+                  '24',
+                  Icons.article,
+                  const Color(0xFF3B82F6),
+                  '+12% from last month',
+                ),
+                const SizedBox(height: 15),
+                _buildStatCard(
+                  'Published',
+                  '18',
+                  Icons.check_circle,
+                  const Color(0xFF10B981),
+                  '75% of total',
+                ),
+                const SizedBox(height: 15),
+                _buildStatCard(
+                  'Drafts',
+                  '6',
+                  Icons.drafts,
+                  const Color(0xFFF59E0B),
+                  'Pending review',
+                ),
+                const SizedBox(height: 15),
+                _buildStatCard(
+                  'Total Views',
+                  '12.5K',
+                  Icons.visibility,
+                  const Color(0xFF8B5CF6),
+                  '+23% this week',
+                ),
+              ],
+            ),
+          const SizedBox(height: 30),
 
           // Recent activity and quick actions
           if (!isMobile)
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 2,
-                  child: _buildRecentActivity(),
-                ),
-                const SizedBox(width: 30),
-                Expanded(
-                  child: _buildQuickActions(),
-                ),
+                Expanded(flex: 2, child: _buildRecentActivity()),
+                const SizedBox(width: 20),
+                Expanded(child: _buildQuickActions()),
               ],
             ),
           if (isMobile) ...[
             _buildRecentActivity(),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             _buildQuickActions(),
           ],
         ],
@@ -173,21 +230,22 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildStatCard(
-      String title, String value, IconData icon, Color color, String trend) {
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+    String trend,
+  ) {
     return Container(
-      width: 250,
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [color.withOpacity(0.2), color.withOpacity(0.1)],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,21 +254,31 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                width: 50,
-                height: 50,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  color: color.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: color, size: 28),
+                child: Icon(icon, color: color, size: 24),
               ),
-              Text(
-                trend,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.green,
-                  fontWeight: FontWeight.w600,
-                ),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.trending_up,
+                    size: 16,
+                    color: Color(0xFF10B981),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    trend,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF10B981),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -218,18 +286,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           Text(
             value,
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: color,
+              color: AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 5),
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 14,
-              color: AppTheme.textLight,
-            ),
+            style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
           ),
         ],
       ),
@@ -238,58 +303,80 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   Widget _buildRecentActivity() {
     return Container(
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: const Color(0xFF141414),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.darkBorder.withOpacity(0.5),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Recent Activity',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Icon(
+                    Icons.access_time,
+                    color: Color(0xFF3B82F6),
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Aktivitas Terbaru',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedMenuIndex = 1;
+                  });
+                },
+                child: const Text(
+                  'Lihat Semua',
+                  style: TextStyle(color: Color(0xFF3B82F6)),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           _buildActivityItem(
-            'New article published',
+            'Artikel baru dipublish',
             'Flutter 4.0: What\'s New',
-            '2 hours ago',
+            '2 jam yang lalu',
             Icons.check_circle,
-            Colors.green,
+            const Color(0xFF10B981),
           ),
           _buildActivityItem(
-            'Draft saved',
+            'Draft disimpan',
             'Cloud Computing Trends 2026',
-            '5 hours ago',
+            '5 jam yang lalu',
             Icons.save,
-            Colors.blue,
+            const Color(0xFF3B82F6),
           ),
           _buildActivityItem(
-            'Article updated',
+            'Artikel diperbarui',
             'AI in Business Transformation',
-            '1 day ago',
+            '1 hari yang lalu',
             Icons.edit,
-            Colors.orange,
+            const Color(0xFFF59E0B),
           ),
           _buildActivityItem(
-            'Comment approved',
+            'Komentar disetujui',
             'On: Mobile App Development Guide',
-            '2 days ago',
+            '2 hari yang lalu',
             Icons.comment,
-            Colors.purple,
+            const Color(0xFF8B5CF6),
           ),
         ],
       ),
@@ -297,7 +384,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   Widget _buildActivityItem(
-      String action, String target, String time, IconData icon, Color color) {
+    String action,
+    String target,
+    String time,
+    IconData icon,
+    Color color,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: Row(
@@ -306,12 +398,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
+              color: color.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: color, size: 20),
+            child: Icon(icon, color: color, size: 18),
           ),
-          const SizedBox(width: 15),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,26 +412,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   action,
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: AppTheme.textColor,
+                    color: AppTheme.textPrimary,
+                    fontSize: 14,
                   ),
                 ),
                 Text(
                   target,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppTheme.textLight,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
                 ),
               ],
             ),
           ),
-          Text(
-            time,
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppTheme.textLight,
-            ),
-          ),
+          Text(time, style: TextStyle(fontSize: 11, color: AppTheme.textMuted)),
         ],
       ),
     );
@@ -347,92 +431,99 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   Widget _buildQuickActions() {
     return Container(
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: const Color(0xFF141414),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppTheme.darkBorder.withOpacity(0.5),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Quick Actions',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
-            ),
+          Row(
+            children: [
+              const Icon(Icons.settings, color: Color(0xFF8B5CF6), size: 20),
+              const SizedBox(width: 8),
+              const Text(
+                'Aksi Cepat',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
-          _buildQuickActionItem(
-            'Create New Article',
-            Icons.add_circle_outline,
-            () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NewsManagementPage(),
-                ),
-              );
-            },
-          ),
-          _buildQuickActionItem(
-            'View All News',
-            Icons.list_alt,
-            () {
-              setState(() {
-                // Navigate to news list
-              });
-            },
-          ),
+          _buildQuickActionItem('Artikel Baru', Icons.add_circle_outline, () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NewsManagementPage(),
+              ),
+            );
+          }),
+          _buildQuickActionItem('Kelola Semua Artikel', Icons.list_alt, () {
+            setState(() {
+              _selectedMenuIndex = 1;
+            });
+          }),
           _buildQuickActionItem(
             'Manage Products',
             Icons.shopping_bag_outlined,
             () {},
           ),
-          _buildQuickActionItem(
-            'Settings',
-            Icons.settings_outlined,
-            () {},
-          ),
+          _buildQuickActionItem('Settings', Icons.settings_outlined, () {}),
         ],
       ),
     );
   }
 
   Widget _buildQuickActionItem(
-      String title, IconData icon, VoidCallback onTap) {
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Material(
-        color: AppTheme.lightColor,
-        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
             padding: const EdgeInsets.all(15),
             child: Row(
               children: [
-                Icon(icon, color: AppTheme.primaryColor, size: 20),
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.buttonGradient,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(icon, color: Colors.white, size: 18),
+                ),
                 const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: AppTheme.textColor,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      color: AppTheme.textPrimary,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-                const Spacer(),
-                const Icon(Icons.chevron_right, color: AppTheme.textLight),
+                const Icon(
+                  Icons.chevron_right,
+                  color: AppTheme.textSecondary,
+                  size: 18,
+                ),
               ],
             ),
           ),
@@ -446,23 +537,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 80, color: AppTheme.primaryColor.withOpacity(0.3)),
+          Icon(icon, size: 80, color: AppTheme.textMuted.withOpacity(0.3)),
           const SizedBox(height: 20),
           Text(
             title,
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
+              color: AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 10),
           Text(
             'Coming Soon',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppTheme.textLight,
-            ),
+            style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
           ),
         ],
       ),

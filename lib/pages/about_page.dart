@@ -262,16 +262,16 @@ class _AboutPageState extends State<AboutPage>
           const SizedBox(height: 15),
           Text(
             name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
+              color: AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             role,
-            style: const TextStyle(fontSize: 14, color: AppTheme.textLight),
+            style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
           ),
         ],
       ),
@@ -284,7 +284,7 @@ class _AboutPageState extends State<AboutPage>
         horizontal: isMobile ? 20 : 60,
         vertical: 60,
       ),
-      color: AppTheme.lightColor,
+      color: AppTheme.darkCard,
       child: Column(
         children: [
           Text('Our Values', style: Theme.of(context).textTheme.headlineMedium),
@@ -322,16 +322,16 @@ class _AboutPageState extends State<AboutPage>
           const SizedBox(height: 15),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
+              color: AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 10),
           Text(
             description,
-            style: const TextStyle(fontSize: 14, color: AppTheme.textLight),
+            style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -379,7 +379,7 @@ class _AboutPageState extends State<AboutPage>
         const SizedBox(height: 10),
         Text(
           label,
-          style: const TextStyle(fontSize: 16, color: AppTheme.textLight),
+          style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
         ),
       ],
     );

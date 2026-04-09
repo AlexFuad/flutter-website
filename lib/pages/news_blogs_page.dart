@@ -15,6 +15,7 @@ class _NewsBlogsPageState extends State<NewsBlogsPage>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   int _selectedCategory = 0;
+  final String _searchTerm = '';
 
   void _navigateToPage(BuildContext context, int index) {
     final routes = [
@@ -30,11 +31,90 @@ class _NewsBlogsPageState extends State<NewsBlogsPage>
     }
   }
 
-  final List<String> _categories = [
-    'All',
-    'Company News',
-    'Technology',
-    'Industry Insights',
+  final List<CategoryItem> _categories = [
+    CategoryItem(id: 'all', name: 'Semua Artikel', icon: Icons.all_inclusive),
+    CategoryItem(
+      id: 'web-development',
+      name: 'Web Development',
+      icon: Icons.code,
+    ),
+    CategoryItem(
+      id: 'digital-marketing',
+      name: 'Digital Marketing',
+      icon: Icons.trending_up,
+    ),
+    CategoryItem(id: 'business', name: 'Business Tips', icon: Icons.people),
+    CategoryItem(id: 'technology', name: 'Technology', icon: Icons.settings),
+    CategoryItem(id: 'tips', name: 'Tips & Tricks', icon: Icons.lightbulb),
+  ];
+
+  final List<ArticleItem> _articles = [
+    ArticleItem(
+      id: '1',
+      title: '10 Tren Web Development Terbaru di 2026',
+      excerpt:
+          'Pelajari tren terbaru dalam web development yang akan mendominasi industri teknologi di tahun 2026.',
+      category: 'web-development',
+      author: 'Daniel RN',
+      date: '2026-01-15',
+      readTime: '8 menit',
+      featured: true,
+    ),
+    ArticleItem(
+      id: '2',
+      title: 'Strategi Digital Marketing untuk UMKM',
+      excerpt:
+          'Panduan lengkap strategi digital marketing yang efektif dan terjangkau untuk usaha mikro, kecil, dan menengah.',
+      category: 'digital-marketing',
+      author: 'Alex Fuad',
+      date: '2026-01-12',
+      readTime: '6 menit',
+      featured: true,
+    ),
+    ArticleItem(
+      id: '3',
+      title: 'Cara Memilih Technology Stack yang Tepat',
+      excerpt:
+          'Tips memilih kombinasi teknologi yang tepat untuk proyek web development Anda berdasarkan kebutuhan bisnis.',
+      category: 'technology',
+      author: 'Eca Tatianna',
+      date: '2026-01-10',
+      readTime: '10 menit',
+      featured: false,
+    ),
+    ArticleItem(
+      id: '4',
+      title: 'Optimasi SEO untuk Website Bisnis',
+      excerpt:
+          'Teknik-teknik SEO terbaru yang dapat meningkatkan ranking website bisnis Anda di mesin pencari Google.',
+      category: 'digital-marketing',
+      author: 'Aprilianti P',
+      date: '2026-01-08',
+      readTime: '7 menit',
+      featured: false,
+    ),
+    ArticleItem(
+      id: '5',
+      title: 'Transformasi Digital untuk Perusahaan Tradisional',
+      excerpt:
+          'Langkah-langkah praktis untuk memulai transformasi digital di perusahaan tradisional.',
+      category: 'business',
+      author: 'Alex Fuad',
+      date: '2026-01-05',
+      readTime: '12 menit',
+      featured: false,
+    ),
+    ArticleItem(
+      id: '6',
+      title: 'Flutter 4.0: What\'s New and Exciting',
+      excerpt:
+          'Explore the latest features that make Flutter the top choice for cross-platform development.',
+      category: 'web-development',
+      author: 'Mike Johnson',
+      date: '2026-01-03',
+      readTime: '7 min read',
+      featured: false,
+    ),
   ];
 
   @override
@@ -69,16 +149,19 @@ class _NewsBlogsPageState extends State<NewsBlogsPage>
         selectedIndex: 3,
         onMenuItemSelected: (index) => _navigateToPage(context, index),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHeroSection(isMobile),
-            _buildCategoryFilter(isMobile),
-            _buildFeaturedArticle(isMobile),
-            _buildArticlesGrid(isMobile),
-            _buildNewsletterSection(isMobile),
-            const Footer(),
-          ],
+      body: Container(
+        decoration: BoxDecoration(gradient: AppTheme.heroGradient),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildHeroSection(isMobile),
+              _buildCategoryFilter(isMobile),
+              if (_selectedCategory == 0) _buildFeaturedArticles(isMobile),
+              _buildArticlesList(isMobile),
+              _buildNewsletterSection(isMobile),
+              const Footer(),
+            ],
+          ),
         ),
       ),
     );
@@ -87,44 +170,36 @@ class _NewsBlogsPageState extends State<NewsBlogsPage>
   Widget _buildHeroSection(bool isMobile) {
     return Container(
       height: isMobile ? 350 : 450,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppTheme.primaryColor.withOpacity(0.9),
-            AppTheme.secondaryColor.withOpacity(0.8),
-          ],
-        ),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'News & Blogs',
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ShaderMask(
+                shaderCallback: (bounds) =>
+                    AppTheme.primaryGradient.createShader(bounds),
+                child: Text(
+                  'Blog & Insights',
                   style: TextStyle(
-                    fontSize: isMobile ? 36 : 52,
+                    fontSize: isMobile ? 36 : 56,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 15),
-                Text(
-                  'Stay Updated with the Latest in Technology',
-                  style: TextStyle(
-                    fontSize: isMobile ? 18 : 22,
-                    color: Colors.white.withOpacity(0.9),
-                  ),
-                  textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 15),
+              Text(
+                'Wawasan terbaru dari Caniel Agency untuk pertumbuhan bisnis digital Anda.',
+                style: TextStyle(
+                  fontSize: isMobile ? 18 : 22,
+                  color: AppTheme.textSecondary,
                 ),
-              ],
-            ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
@@ -138,200 +213,291 @@ class _NewsBlogsPageState extends State<NewsBlogsPage>
         vertical: 40,
       ),
       child: Wrap(
-        spacing: 15,
-        runSpacing: 15,
+        spacing: 12,
+        runSpacing: 12,
         alignment: WrapAlignment.center,
-        children: List.generate(
-          _categories.length,
-          (index) => ElevatedButton(
-            onPressed: () {
+        children: List.generate(_categories.length, (index) {
+          final isSelected = _selectedCategory == index;
+          return GestureDetector(
+            onTap: () {
               setState(() {
                 _selectedCategory = index;
               });
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _selectedCategory == index
-                  ? AppTheme.primaryColor
-                  : Colors.white,
-              foregroundColor: _selectedCategory == index
-                  ? Colors.white
-                  : AppTheme.primaryColor,
-              elevation: _selectedCategory == index ? 2 : 0,
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-              shape: RoundedRectangleBorder(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: isSelected ? AppTheme.buttonGradient : null,
+                color: isSelected ? null : Colors.transparent,
                 borderRadius: BorderRadius.circular(25),
-                side: BorderSide(
-                  color: _selectedCategory == index
-                      ? AppTheme.primaryColor
-                      : Colors.grey.shade300,
+                border: Border.all(
+                  color: isSelected ? Colors.transparent : AppTheme.darkBorder,
+                  width: 1,
                 ),
               ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    _categories[index].icon,
+                    size: 16,
+                    color: isSelected ? Colors.white : AppTheme.primaryColor,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    _categories[index].name,
+                    style: TextStyle(
+                      color: isSelected ? Colors.white : AppTheme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Text(
-              _categories[index],
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
 
-  Widget _buildFeaturedArticle(bool isMobile) {
+  Widget _buildFeaturedArticles(bool isMobile) {
+    final featuredArticles = _articles.where((a) => a.featured).toList();
+
+    if (featuredArticles.isEmpty) return const SizedBox.shrink();
+
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: isMobile ? 20 : 60,
         vertical: 30,
       ),
-      child: Container(
-        padding: const EdgeInsets.all(40),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
-          ),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text(
-                'FEATURED',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'The Future of AI in Business: Transforming Industries in 2026',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ShaderMask(
+            shaderCallback: (bounds) =>
+                AppTheme.primaryGradient.createShader(bounds),
+            child: Text(
+              'Artikel Unggulan',
               style: TextStyle(
-                fontSize: isMobile ? 24 : 32,
+                fontSize: isMobile ? 28 : 36,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
-            const SizedBox(height: 15),
-            Text(
-              'Discover how artificial intelligence is revolutionizing business operations, '
-              'from automation to predictive analytics, and what it means for your organization.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white.withOpacity(0.9),
-                height: 1.6,
-              ),
-            ),
-            const SizedBox(height: 25),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Artikel pilihan yang paling banyak dibaca dan memberikan value terbaik.',
+            style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
+          ),
+          const SizedBox(height: 30),
+          if (isMobile)
+            Column(
+              children: featuredArticles
+                  .map(
+                    (article) => Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: _buildFeaturedArticleCard(article, isMobile),
+                    ),
+                  )
+                  .toList(),
+            )
+          else
             Row(
-              children: [
-                const CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person, color: AppTheme.primaryColor),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'John Doe',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: featuredArticles
+                  .map(
+                    (article) => Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 20),
+                        child: _buildFeaturedArticleCard(article, isMobile),
                       ),
                     ),
-                    Text(
-                      'March 28, 2026 • 5 min read',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  )
+                  .toList(),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildArticlesGrid(bool isMobile) {
-    final articles = [
-      {
-        'category': 'Company News',
-        'categoryIndex': 1,
-        'title': 'Caniel Expands Operations to Southeast Asia',
-        'excerpt':
-            'We\'re excited to announce our new regional headquarters in Singapore.',
-        'author': 'Jane Smith',
-        'date': 'March 25, 2026',
-        'readTime': '3 min read',
-      },
-      {
-        'category': 'Technology',
-        'categoryIndex': 2,
-        'title': 'Flutter 4.0: What\'s New and Exciting',
-        'excerpt':
-            'Explore the latest features that make Flutter the top choice for cross-platform development.',
-        'author': 'Mike Johnson',
-        'date': 'March 22, 2026',
-        'readTime': '7 min read',
-      },
-      {
-        'category': 'Industry Insights',
-        'categoryIndex': 3,
-        'title': 'Cloud Computing Trends to Watch in 2026',
-        'excerpt':
-            'Stay ahead of the curve with these emerging cloud technologies.',
-        'author': 'Sarah Williams',
-        'date': 'March 18, 2026',
-        'readTime': '6 min read',
-      },
-      {
-        'category': 'Technology',
-        'categoryIndex': 2,
-        'title': 'Building Scalable Microservices with Docker',
-        'excerpt': 'A comprehensive guide to containerizing your applications.',
-        'author': 'Alex Chen',
-        'date': 'March 15, 2026',
-        'readTime': '8 min read',
-      },
-      {
-        'category': 'Company News',
-        'categoryIndex': 1,
-        'title': 'Caniel Wins Innovation Award 2026',
-        'excerpt':
-            'Recognized for excellence in digital transformation solutions.',
-        'author': 'Emily Davis',
-        'date': 'March 10, 2026',
-        'readTime': '4 min read',
-      },
-      {
-        'category': 'Industry Insights',
-        'categoryIndex': 3,
-        'title': 'Cybersecurity Best Practices for Modern Enterprises',
-        'excerpt':
-            'Protect your business with these essential security strategies.',
-        'author': 'David Lee',
-        'date': 'March 5, 2026',
-        'readTime': '9 min read',
-      },
-    ];
+  Widget _buildFeaturedArticleCard(ArticleItem article, bool isMobile) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppTheme.darkCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.darkBorder, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+              image: const DecorationImage(
+                image: NetworkImage(
+                  'https://images.unsplash.com/photo-1595872018818-97555653a011',
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      'Unggulan',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.person, size: 14, color: AppTheme.textSecondary),
+                    const SizedBox(width: 5),
+                    Text(
+                      article.author,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Icon(
+                      Icons.calendar_today,
+                      size: 14,
+                      color: AppTheme.textSecondary,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      article.date,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Icon(
+                      Icons.schedule,
+                      size: 14,
+                      color: AppTheme.textSecondary,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      article.readTime,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  article.title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  article.excerpt,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppTheme.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to article detail
+                  },
+                  child: Row(
+                    children: [
+                      Text(
+                        'Baca Selengkapnya',
+                        style: TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Icon(
+                        Icons.arrow_forward,
+                        size: 16,
+                        color: AppTheme.primaryColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-    final filteredArticles = _selectedCategory == 0
-        ? articles
-        : articles
-              .where((a) => a['categoryIndex'] == _selectedCategory)
-              .toList();
+  Widget _buildArticlesList(bool isMobile) {
+    List<ArticleItem> filteredArticles;
+
+    if (_selectedCategory == 0) {
+      filteredArticles = _articles.where((a) => !a.featured).toList();
+    } else {
+      final categoryId = _categories[_selectedCategory].id;
+      filteredArticles = _articles
+          .where((a) => a.category == categoryId)
+          .toList();
+    }
+
+    if (filteredArticles.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 60),
+        child: Center(
+          child: Column(
+            children: [
+              Icon(Icons.article_outlined, size: 80, color: AppTheme.textMuted),
+              const SizedBox(height: 20),
+              Text(
+                'Tidak ada artikel ditemukan',
+                style: TextStyle(fontSize: 18, color: AppTheme.textSecondary),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -339,207 +505,382 @@ class _NewsBlogsPageState extends State<NewsBlogsPage>
         vertical: 40,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Wrap(
-            spacing: 30,
-            runSpacing: 30,
-            alignment: WrapAlignment.center,
-            children: filteredArticles.map((article) {
-              return _buildArticleCard(
-                article['category'] as String,
-                article['title'] as String,
-                article['excerpt'] as String,
-                article['author'] as String,
-                article['date'] as String,
-                article['readTime'] as String,
-              );
-            }).toList(),
-          ),
+          if (_selectedCategory != 0)
+            ShaderMask(
+              shaderCallback: (bounds) =>
+                  AppTheme.primaryGradient.createShader(bounds),
+              child: Text(
+                _categories[_selectedCategory].name,
+                style: TextStyle(
+                  fontSize: isMobile ? 28 : 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          if (_selectedCategory != 0) const SizedBox(height: 10),
+          if (_selectedCategory != 0)
+            Text(
+              'Menampilkan ${filteredArticles.length} artikel',
+              style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
+            ),
+          if (_selectedCategory != 0) const SizedBox(height: 30),
+          ...filteredArticles
+              .map(
+                (article) => Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: _buildArticleListItem(article, isMobile),
+                ),
+              )
+              .toList(),
         ],
       ),
     );
   }
 
-  Widget _buildArticleCard(
-    String category,
-    String title,
-    String excerpt,
-    String author,
-    String date,
-    String readTime,
-  ) {
+  Widget _buildArticleListItem(ArticleItem article, bool isMobile) {
     return Container(
-      width: 350,
-      padding: const EdgeInsets.all(25),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 3,
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        color: AppTheme.darkCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.darkBorder, width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(15),
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 180,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
+                    image: const DecorationImage(
+                      image: NetworkImage(
+                        'https://images.unsplash.com/photo-1595872018818-97555653a011',
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: _buildArticleCardContent(article),
+                ),
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 300,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      bottomLeft: Radius.circular(16),
+                    ),
+                    image: const DecorationImage(
+                      image: NetworkImage(
+                        'https://images.unsplash.com/photo-1595872018818-97555653a011',
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: _buildArticleCardContent(article),
+                  ),
+                ),
+              ],
             ),
-            child: Text(
-              category,
-              style: const TextStyle(
-                color: AppTheme.primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+    );
+  }
+
+  Widget _buildArticleCardContent(ArticleItem article) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-          ),
-          const SizedBox(height: 15),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
-              height: 1.4,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            excerpt,
-            style: const TextStyle(fontSize: 14, color: AppTheme.textLight),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              const CircleAvatar(
-                radius: 15,
-                backgroundColor: AppTheme.lightColor,
-                child: Icon(
-                  Icons.person,
-                  size: 18,
+              child: Text(
+                _categories
+                    .firstWhere(
+                      (c) => c.id == article.category,
+                      orElse: () => _categories[0],
+                    )
+                    .name,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
                   color: AppTheme.primaryColor,
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      author,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                        color: AppTheme.textColor,
-                      ),
-                    ),
-                    Text(
-                      '$date • $readTime',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppTheme.textLight,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            ),
+            const SizedBox(width: 10),
+            Icon(Icons.calendar_today, size: 13, color: AppTheme.textSecondary),
+            const SizedBox(width: 5),
+            Text(
+              article.date,
+              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text(
+          article.title,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimary,
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          article.excerpt,
+          style: TextStyle(
+            fontSize: 14,
+            color: AppTheme.textSecondary,
+            height: 1.5,
+          ),
+        ),
+        const SizedBox(height: 15),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                const CircleAvatar(
+                  radius: 15,
+                  backgroundColor: AppTheme.darkBorder,
+                  child: Icon(
+                    Icons.person,
+                    size: 16,
+                    color: AppTheme.primaryColor,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  article.author,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    color: AppTheme.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            GestureDetector(
+              onTap: () {
+                // Navigate to detail
+              },
+              child: Row(
+                children: [
+                  Text(
+                    'Baca',
+                    style: TextStyle(
+                      color: AppTheme.primaryColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 16,
+                    color: AppTheme.primaryColor,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
   Widget _buildNewsletterSection(bool isMobile) {
-    return Container(
+    return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: isMobile ? 20 : 60,
         vertical: 60,
       ),
-      color: AppTheme.lightColor,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(40),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 3,
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
+      child: Container(
+        padding: const EdgeInsets.all(40),
+        decoration: AppTheme.glassEffect,
+        child: Column(
+          children: [
+            Icon(Icons.mail, size: 60, color: AppTheme.primaryColor),
+            const SizedBox(height: 20),
+            ShaderMask(
+              shaderCallback: (bounds) =>
+                  AppTheme.primaryGradient.createShader(bounds),
+              child: Text(
+                'Subscribe to Our Newsletter',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-              ],
+              ),
             ),
-            child: Column(
-              children: [
-                Icon(Icons.mail, size: 60, color: AppTheme.primaryColor),
-                const SizedBox(height: 20),
-                Text(
-                  'Subscribe to Our Newsletter',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Get the latest updates delivered straight to your inbox',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: isMobile ? 250 : 300,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Enter your email',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 15,
-                          ),
+            const SizedBox(height: 10),
+            Text(
+              'Dapatkan artikel terbaru langsung di email Anda',
+              style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+            if (isMobile)
+              Column(
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Email Anda',
+                      filled: true,
+                      fillColor: AppTheme.darkCard,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppTheme.darkBorder),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppTheme.darkBorder),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          color: AppTheme.primaryColor,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 15,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: AppTheme.buttonGradient,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: const Center(
+                      child: Text(
+                        'Berlangganan',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 15),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
+                  ),
+                ],
+              )
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 300,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Email Anda',
+                        filled: true,
+                        fillColor: AppTheme.darkCard,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: AppTheme.darkBorder),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: AppTheme.darkBorder),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: AppTheme.primaryColor,
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
                           vertical: 15,
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      child: const Text(
-                        'Subscribe',
-                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+                  ),
+                  const SizedBox(width: 15),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: AppTheme.buttonGradient,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 15,
+                    ),
+                    child: const Text(
+                      'Berlangganan',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }
+}
+
+class CategoryItem {
+  final String id;
+  final String name;
+  final IconData icon;
+
+  const CategoryItem({
+    required this.id,
+    required this.name,
+    required this.icon,
+  });
+}
+
+class ArticleItem {
+  final String id;
+  final String title;
+  final String excerpt;
+  final String category;
+  final String author;
+  final String date;
+  final String readTime;
+  final bool featured;
+
+  const ArticleItem({
+    required this.id,
+    required this.title,
+    required this.excerpt,
+    required this.category,
+    required this.author,
+    required this.date,
+    required this.readTime,
+    this.featured = false,
+  });
 }

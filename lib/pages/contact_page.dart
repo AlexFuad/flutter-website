@@ -214,16 +214,16 @@ class _ContactPageState extends State<ContactPage>
           const SizedBox(height: 20),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
+              color: AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             content,
-            style: const TextStyle(fontSize: 14, color: AppTheme.textLight),
+            style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -237,7 +237,7 @@ class _ContactPageState extends State<ContactPage>
         horizontal: isMobile ? 20 : 60,
         vertical: 60,
       ),
-      color: AppTheme.lightColor,
+      color: AppTheme.darkCard,
       child: Column(
         children: [
           Text(
@@ -447,13 +447,16 @@ class _ContactPageState extends State<ContactPage>
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.textColor,
+                      color: AppTheme.textPrimary,
                     ),
                   ),
                   SizedBox(height: 8),
                   Text(
                     'Jl. Sudirman No. 123, Jakarta',
-                    style: TextStyle(fontSize: 14, color: AppTheme.textLight),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppTheme.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -532,10 +535,10 @@ class _FAQItemState extends State<_FAQItem> {
           ListTile(
             title: Text(
               widget.question,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
-                color: AppTheme.textColor,
+                color: AppTheme.textPrimary,
               ),
             ),
             trailing: Icon(
@@ -554,7 +557,7 @@ class _FAQItemState extends State<_FAQItem> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Text(
                 widget.answer,
-                style: const TextStyle(fontSize: 14, color: AppTheme.textLight),
+                style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
               ),
             ),
             crossFadeState: _isExpanded

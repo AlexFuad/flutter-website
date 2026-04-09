@@ -109,7 +109,7 @@ class _ResponsiveNavbarState extends State<ResponsiveNavbar>
                         ),
                         foregroundColor: widget.selectedIndex == index
                             ? AppTheme.primaryColor
-                            : AppTheme.textLight,
+                            : AppTheme.textSecondary,
                       ),
                       child: Text(
                         menuItems[index],

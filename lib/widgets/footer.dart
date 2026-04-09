@@ -14,7 +14,7 @@ class Footer extends StatelessWidget {
         horizontal: isMobile ? 20 : 60,
         vertical: 40,
       ),
-      color: AppTheme.darkColor,
+      color: AppTheme.darkBg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,7 +38,7 @@ class Footer extends StatelessWidget {
           const Divider(color: Colors.grey, height: 40),
           Center(
             child: Text(
-              '© 2026 Caniel. All rights reserved.',
+              '© 2026 Caniel Agency | All rights reserved.',
               style: TextStyle(color: Colors.grey[600], fontSize: 14),
             ),
           ),
@@ -137,8 +137,8 @@ class Footer extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 15),
-          _buildContactItem(Icons.email, 'info@caniel.com'),
-          _buildContactItem(Icons.phone, '+62 123 4567 8900'),
+          _buildContactItem(Icons.email, 'info@caniel.my.id'),
+          _buildContactItem(Icons.phone, '+62 882 9143 7432'),
           _buildContactItem(Icons.location_on, 'Jakarta, Indonesia'),
         ],
       ),

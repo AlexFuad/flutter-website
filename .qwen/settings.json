@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(D:\\My Files\\Developer\\Project Caniel_Horizon AI/**)",
+      "Read(D:\\My Files\\Developer\\Project Caniel_Horizon AI\\src/**)",
+      "Read(D:\\My Files\\Developer\\Project Caniel_Horizon AI\\src\\pages/**)",
+      "Read(D:\\My Files\\Developer\\Project Caniel_Horizon AI\\src\\components/**)",
+      "Read(D:\\My Files\\Developer\\Project Caniel_Horizon AI\\src\\components\\blog/**)",
+      "Read(D:\\My Files\\Developer\\Project Caniel_Horizon AI\\src\\pages\\admin/**)",
+      "Bash(flutter *)",
+      "Bash(findstr *)",
+      "Bash(powershell *)",
+      "Bash(timeout *)",
+      "Bash(tasklist)",
+      "Bash(git add *)"
+    ]
+  },
+  "$version": 3
+}

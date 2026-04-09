@@ -279,16 +279,16 @@ class _ProductsServicesPageState extends State<ProductsServicesPage>
           const SizedBox(height: 20),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: AppTheme.textColor,
+              color: AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             description,
-            style: const TextStyle(fontSize: 14, color: AppTheme.textLight),
+            style: TextStyle(fontSize: 14, color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 20),
           TextButton(
@@ -313,7 +313,7 @@ class _ProductsServicesPageState extends State<ProductsServicesPage>
         horizontal: isMobile ? 20 : 60,
         vertical: 60,
       ),
-      color: AppTheme.lightColor,
+      color: AppTheme.darkCard,
       child: Column(
         children: [
           Text(
@@ -396,7 +396,7 @@ class _ProductsServicesPageState extends State<ProductsServicesPage>
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: isPopular ? Colors.white : AppTheme.textColor,
+              color: isPopular ? Colors.white : AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 10),
@@ -415,7 +415,7 @@ class _ProductsServicesPageState extends State<ProductsServicesPage>
               fontSize: 14,
               color: isPopular
                   ? Colors.white.withOpacity(0.9)
-                  : AppTheme.textLight,
+                  : AppTheme.textSecondary,
             ),
             textAlign: TextAlign.center,
           ),

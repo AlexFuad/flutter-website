@@ -21,6 +21,7 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
   late TextEditingController _contentController;
   late TextEditingController _authorController;
   late TextEditingController _readTimeController;
+  late TextEditingController _imageUrlController;
 
   String _selectedCategory = 'Company News';
   bool _isPublished = true;
@@ -46,6 +47,9 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
     _readTimeController = TextEditingController(
       text: widget.news?.readTime ?? '',
     );
+    _imageUrlController = TextEditingController(
+      text: widget.news?.imageUrl ?? '',
+    );
     _selectedCategory = widget.news?.category ?? 'Company News';
     _isPublished = widget.news?.isPublished ?? true;
   }
@@ -57,6 +61,7 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
     _contentController.dispose();
     _authorController.dispose();
     _readTimeController.dispose();
+    _imageUrlController.dispose();
     super.dispose();
   }
 
@@ -83,6 +88,7 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
           author: _authorController.text,
           date: formattedDate,
           readTime: _readTimeController.text,
+          imageUrl: _imageUrlController.text,
           isPublished: _isPublished,
         );
         _newsService.addNews(newArticle);
@@ -95,6 +101,7 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
           category: _selectedCategory,
           author: _authorController.text,
           readTime: _readTimeController.text,
+          imageUrl: _imageUrlController.text,
           isPublished: _isPublished,
         );
         _newsService.updateNews(widget.news!.id!, updatedArticle);
@@ -113,7 +120,7 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
                   ? 'Article created successfully'
                   : 'Article updated successfully',
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: const Color(0xFF10B981),
           ),
         );
       }
@@ -145,41 +152,69 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
     final isMobile = screenWidth < 768;
 
     return Scaffold(
-      backgroundColor: AppTheme.lightColor,
+      backgroundColor: const Color(0xFF1A1A1A),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
+        backgroundColor: const Color(0xFF141414),
+        elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppTheme.textColor),
+          icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           isEditing ? 'Edit Article' : 'Create New Article',
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: AppTheme.textColor,
+            color: AppTheme.textPrimary,
           ),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 15),
-            child: ElevatedButton.icon(
-              onPressed: _isLoading ? null : _saveArticle,
-              icon: _isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : const Icon(Icons.save, size: 18),
-              label: Text(_isLoading ? 'Saving...' : 'Save'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryColor,
-                foregroundColor: Colors.white,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: AppTheme.buttonGradient,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: _isLoading ? null : _saveArticle,
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_isLoading)
+                          const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                        else
+                          const Icon(Icons.save, size: 16, color: Colors.white),
+                        const SizedBox(width: 8),
+                        Text(
+                          _isLoading ? 'Saving...' : 'Save',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -249,12 +284,43 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
         ),
         const SizedBox(height: 20),
 
+        // Image URL
+        _buildFormField(
+          controller: _imageUrlController,
+          label: 'Featured Image URL',
+          hint: 'https://example.com/image.jpg',
+          icon: Icons.image,
+          validator: (value) {
+            if (value != null &&
+                value.isNotEmpty &&
+                !value.startsWith('http')) {
+              return 'Please enter a valid URL';
+            }
+            return null;
+          },
+        ),
+        if (_imageUrlController.text.isNotEmpty) const SizedBox(height: 12),
+        if (_imageUrlController.text.isNotEmpty)
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              color: const Color(0xFF141414),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.darkBorder),
+              image: DecorationImage(
+                image: NetworkImage(_imageUrlController.text),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        const SizedBox(height: 20),
+
         // Content
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: const Color(0xFF141414),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: AppTheme.darkBorder),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,21 +328,25 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.lightColor,
+                  color: const Color(0xFF222222),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(11),
                     topRight: Radius.circular(11),
                   ),
                 ),
-                child: Row(
+                child: Wrap(
+                  spacing: 5,
                   children: [
                     _buildToolbarButton(Icons.format_bold, () {}),
                     _buildToolbarButton(Icons.format_italic, () {}),
+                    _buildToolbarButton(Icons.format_underline, () {}),
                     _buildToolbarButton(Icons.format_list_bulleted, () {}),
                     _buildToolbarButton(Icons.format_list_numbered, () {}),
                     const SizedBox(width: 10),
                     _buildToolbarButton(Icons.link, () {}),
                     _buildToolbarButton(Icons.image, () {}),
+                    _buildToolbarButton(Icons.videocam, () {}),
+                    _buildToolbarButton(Icons.table_chart, () {}),
                   ],
                 ),
               ),
@@ -290,19 +360,21 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: AppTheme.textColor,
+                        color: AppTheme.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 10),
                     TextFormField(
                       controller: _contentController,
                       maxLines: 12,
+                      style: const TextStyle(color: AppTheme.textPrimary),
                       decoration: InputDecoration(
                         hintText: 'Write your article content here...',
+                        hintStyle: TextStyle(color: AppTheme.textMuted),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.all(10),
                         filled: true,
-                        fillColor: AppTheme.lightColor,
+                        fillColor: const Color(0xFF0A0A0A),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -329,27 +401,30 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: const Color(0xFF141414),
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            border: Border.all(color: AppTheme.darkBorder, width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Publishing',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textColor,
-                ),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.settings,
+                    color: AppTheme.textSecondary,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Properties',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
 
@@ -359,21 +434,23 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.textLight,
+                  color: AppTheme.textSecondary,
                 ),
               ),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: AppTheme.lightColor,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade300),
+                  color: const Color(0xFF0A0A0A),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppTheme.darkBorder),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: _selectedCategory,
                     isExpanded: true,
+                    dropdownColor: const Color(0xFF0A0A0A),
+                    style: const TextStyle(color: AppTheme.textPrimary),
                     icon: const Icon(
                       Icons.arrow_drop_down,
                       color: AppTheme.primaryColor,
@@ -425,33 +502,53 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
               const SizedBox(height: 20),
 
               // Published status
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Publish Immediately',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.textColor,
+              Container(
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0A0A0A),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: _isPublished
+                              ? const Color(0xFFF59E0B)
+                              : AppTheme.textMuted,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Featured Post',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Switch(
-                    value: _isPublished,
-                    onChanged: (value) {
-                      setState(() {
-                        _isPublished = value;
-                      });
-                    },
-                    activeColor: AppTheme.primaryColor,
-                  ),
-                ],
+                    Switch(
+                      value: _isPublished,
+                      onChanged: (value) {
+                        setState(() {
+                          _isPublished = value;
+                        });
+                      },
+                      activeThumbColor: AppTheme.primaryColor,
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(height: 15),
               Text(
                 _isPublished
                     ? 'Article will be published immediately'
                     : 'Article will be saved as draft',
-                style: const TextStyle(fontSize: 12, color: AppTheme.textLight),
+                style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
               ),
             ],
           ),
@@ -476,33 +573,35 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppTheme.textColor,
+            color: AppTheme.textSecondary,
           ),
         ),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
           maxLines: maxLines,
+          style: const TextStyle(color: AppTheme.textPrimary),
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: TextStyle(color: AppTheme.textMuted),
             prefixIcon: Icon(icon, color: AppTheme.primaryColor),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: AppTheme.darkBorder),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: AppTheme.darkBorder),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(
                 color: AppTheme.primaryColor,
                 width: 2,
               ),
             ),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: const Color(0xFF141414),
           ),
           validator: validator,
         ),
@@ -512,16 +611,18 @@ class _NewsEditorPageState extends State<NewsEditorPage> {
 
   Widget _buildToolbarButton(IconData icon, VoidCallback onPressed) {
     return Container(
-      margin: const EdgeInsets.only(right: 5),
-      child: Material(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(6),
+      ),
+      child: Material(
+        color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
           borderRadius: BorderRadius.circular(6),
           child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Icon(icon, size: 18, color: AppTheme.textLight),
+            child: Icon(icon, size: 18, color: AppTheme.textSecondary),
           ),
         ),
       ),

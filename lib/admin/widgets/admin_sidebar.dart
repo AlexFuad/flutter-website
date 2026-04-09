@@ -25,64 +25,81 @@ class AdminSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: isExpanded ? 250 : 70,
+      width: isExpanded ? 256 : 72,
       decoration: BoxDecoration(
-        color: AppTheme.darkColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(2, 0),
+        color: const Color(0xFF141414),
+        border: Border(
+          right: BorderSide(
+            color: AppTheme.darkBorder.withOpacity(0.5),
+            width: 1,
           ),
-        ],
+        ),
       ),
       child: Column(
         children: [
           // Logo and toggle
           Container(
-            height: 70,
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: () => onMenuItemSelected(0),
-                  child: Container(
-                    width: 40,
-                    height: 40,
+                if (isExpanded)
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            gradient: AppTheme.primaryGradient,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'C',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Text(
+                          'CMS',
+                          style: TextStyle(
+                            color: AppTheme.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Container(
+                    width: 32,
+                    height: 32,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppTheme.primaryColor, AppTheme.secondaryColor],
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                      gradient: AppTheme.primaryGradient,
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Center(
                       child: Text(
                         'C',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 24,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (isExpanded) const SizedBox(width: 12),
-                if (isExpanded)
-                  const Expanded(
-                    child: Text(
-                      'Caniel CMS',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 IconButton(
                   icon: Icon(
                     isExpanded ? Icons.chevron_left : Icons.chevron_right,
-                    color: Colors.white70,
+                    color: AppTheme.textSecondary,
                     size: 20,
                   ),
                   onPressed: onToggle,
@@ -93,12 +110,12 @@ class AdminSidebar extends StatelessWidget {
             ),
           ),
 
-          const Divider(color: Colors.white24, height: 1),
+          const Divider(color: Color(0xFF2A2A2A), height: 1),
 
           // Menu items
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               children: List.generate(
                 menuItems.length,
                 (index) => _buildMenuItem(
@@ -111,37 +128,35 @@ class AdminSidebar extends StatelessWidget {
           ),
 
           // Logout button
-          const Divider(color: Colors.white24, height: 1),
+          const Divider(color: Color(0xFF2A2A2A), height: 1),
           _buildLogoutButton(context),
-          const SizedBox(height: 10),
+          const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  Widget _buildMenuItem(
-      BuildContext context, MenuItem item, bool isSelected) {
+  Widget _buildMenuItem(BuildContext context, MenuItem item, bool isSelected) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Material(
         color: isSelected
             ? AppTheme.primaryColor.withOpacity(0.2)
             : Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: () => onMenuItemSelected(item.index),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: isExpanded ? 12 : 14,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               children: [
                 Icon(
                   item.icon,
-                  color: isSelected ? AppTheme.primaryColor : Colors.white70,
-                  size: 22,
+                  color: isSelected
+                      ? AppTheme.primaryColor
+                      : AppTheme.textSecondary,
+                  size: 18,
                 ),
                 if (isExpanded) const SizedBox(width: 12),
                 if (isExpanded)
@@ -149,9 +164,13 @@ class AdminSidebar extends StatelessWidget {
                     child: Text(
                       item.label,
                       style: TextStyle(
-                        color: isSelected ? AppTheme.primaryColor : Colors.white70,
+                        color: isSelected
+                            ? AppTheme.primaryColor
+                            : AppTheme.textSecondary,
                         fontSize: 14,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
                       ),
                     ),
                   ),
@@ -165,21 +184,31 @@ class AdminSidebar extends StatelessWidget {
 
   Widget _buildLogoutButton(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: () {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text('Logout'),
-                content: const Text('Are you sure you want to logout?'),
+                backgroundColor: AppTheme.darkCard,
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(color: AppTheme.textPrimary),
+                ),
+                content: const Text(
+                  'Are you sure you want to logout?',
+                  style: TextStyle(color: AppTheme.textSecondary),
+                ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: AppTheme.textSecondary),
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -195,19 +224,12 @@ class AdminSidebar extends StatelessWidget {
               ),
             );
           },
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: isExpanded ? 12 : 14,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               children: [
-                const Icon(
-                  Icons.logout,
-                  color: Colors.red,
-                  size: 22,
-                ),
+                const Icon(Icons.logout, color: Colors.red, size: 18),
                 if (isExpanded) const SizedBox(width: 12),
                 if (isExpanded)
                   const Expanded(
